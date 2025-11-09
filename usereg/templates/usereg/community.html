@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenify | Community</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+  body { display:flex; flex-direction:column; min-height:100vh; background: radial-gradient(circle at 20% 30%, #e9fff0 0%, #d9ffea 40%, #f2fff9 100%); color:#333; overflow-x:hidden; }
+
+  /* Header */
+  header { background: linear-gradient(270deg,#2e8b57,#3fbf7f,#27a96f); background-size:600% 600%; animation:gradientShift 10s ease infinite; color:white; padding:18px 40px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 15px rgba(46,139,87,0.3); }
+  @keyframes gradientShift { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+  header nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; }
+  header nav a:hover { text-decoration: underline; }
+
+  /* Main layout */
+  .main-content { display:flex; flex:1; }
+
+  /* Sidebar */
+  .sidebar { width:270px; background: rgba(37,111,70,0.95); color:white; padding:30px 20px; display:flex; flex-direction:column; box-shadow: inset -3px 0 10px rgba(0,0,0,0.2); overflow-y:auto; }
+  .sidebar a { color:#eaffea; text-decoration:none; padding:10px 14px; border-radius:8px; margin-bottom:8px; display:block; transition:0.3s; }
+  .sidebar a:hover { background: linear-gradient(90deg,#3fc46d,#2e8b57); transform:translateX(5px); }
+
+  /* Dashboard */
+  .dashboard { flex:1; padding:40px; background: linear-gradient(135deg,#f8fff8 0%,#e6ffe9 100%); position:relative; overflow-y:auto; }
+  .dashboard h2 { color:#2e8b57; text-align:center; margin-bottom:30px; font-size:32px; }
+
+  /* Community posts */
+  .post-card { background:#ffffffcc; border-radius:16px; box-shadow:0 6px 18px rgba(46,139,87,0.25); padding:20px; margin-bottom:20px; transition: transform 0.3s, box-shadow 0.3s; }
+  .post-card:hover { transform: translateY(-5px); box-shadow:0 12px 35px rgba(46,139,87,0.35); }
+  .post-card h3 { color:#2e8b57; margin-bottom:10px; }
+  .post-card p { color:#555; font-size:14px; margin-bottom:10px; }
+  .post-card .author { font-size:12px; color:#3fbf7f; }
+
+  /* New post form */
+  .new-post { background:#ffffffcc; border-radius:16px; padding:20px; margin-bottom:30px; box-shadow:0 6px 18px rgba(46,139,87,0.25); }
+  .new-post h3 { color:#2e8b57; margin-bottom:15px; }
+  .new-post textarea { width:100%; padding:12px; border-radius:10px; border:2px solid #d1f0da; resize:none; outline:none; transition:0.3s; }
+  .new-post textarea:focus { border-color:#3fbf7f; box-shadow:0 0 10px rgba(63,191,127,0.3); }
+  .new-post button { margin-top:10px; background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-size:16px; transition:0.3s; }
+  .new-post button:hover { transform:translateY(-2px); box-shadow:0 6px 15px rgba(46,139,87,0.4); }
+
+  footer { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; text-align:center; padding:14px; font-size:14px; }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Greenify</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="sidebar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'eco_tips' %}">🪴 Eco Tips</a>
+        <a href="{% url 'waste_management' %}">🚮 Waste Management</a>
+        <a href="{% url 'water_conservation' %}">💧 Water Conservation</a>
+        <a href="{% url 'energy_conservation' %}">⚡ Energy Conservation</a>
+        <a href="{% url 'carbon_footprint' %}">🌍 Carbon Footprint Calculator</a>
+        <a href="{% url 'eco_challenges' %}">🏆 Eco Challenges / Gamification</a>
+<a href="{% url 'progress_tracker' %}">📈 Progress Tracker</a>
+        <a href="{% url 'leaderboard' %}">🎖 Leaderboard</a>
+        <a href="{% url 'rewards' %}">🎁 Rewards</a>
+        <a href="{% url 'community' %}">🤝 Community</a>
+        <a href="{% url 'articles' %}">📰 Articles</a>
+        <a href="{% url 'feedback' %}">💬 Feedback</a>
+        <a href="{% url 'about' %}">ℹ️ About Us</a>
+    </div>
+
+    <div class="dashboard">
+        <h2>🤝 Greenify Community</h2>
+
+        <!-- New Post Form -->
+        <div class="new-post">
+            <h3>Share Your Eco Thoughts</h3>
+            <textarea id="newPostContent" rows="4" placeholder="Write something..."></textarea>
+            <button onclick="addPost()">Post</button>
+        </div>
+
+        <!-- Existing Posts -->
+        <div id="postsContainer">
+            <!-- Example posts, dynamically added below -->
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Greenify | Empowering Sustainable Futures 🌎</p>
+</footer>
+
+<script>
+let posts = [
+    {author: "Alice", content: "I just planted 5 trees today! 🌳"},
+    {author: "Bob", content: "Started composting my kitchen waste ♻️"},
+    {author: "Charlie", content: "Switched to reusable bottles! 💧"},
+    {author: "Diana", content: "Installed solar panels at home ☀️"},
+    {author: "Eve", content: "Joined the local clean-up drive 🧹"},
+    {author: "Frank", content: "Reduced electricity usage by 20% ⚡"},
+    {author: "Grace", content: "Donated old clothes to charity 👕"},
+    {author: "Hank", content: "Started bike commuting 🚲"},
+    {author: "Ivy", content: "Recycled all my plastics today 🛍️"},
+    {author: "Jack", content: "Planted herbs in my balcony 🌱"}
+];
+
+// Function to render posts
+function renderPosts() {
+    const container = document.getElementById('postsContainer');
+    container.innerHTML = '';
+    posts.slice().reverse().forEach(post => {
+        const div = document.createElement('div');
+        div.className = 'post-card';
+        div.innerHTML = `<h3>${post.author}</h3><p>${post.content}</p><p class="author">Posted by ${post.author}</p>`;
+        container.appendChild(div);
+    });
+}
+
+// Function to add new post
+function addPost() {
+    const content = document.getElementById('newPostContent').value.trim();
+    if(content !== '') {
+        posts.push({author: "You", content: content});
+        document.getElementById('newPostContent').value = '';
+        renderPosts();
+    } else {
+        alert("Please write something before posting!");
+    }
+}
+
+// Initial render
+renderPosts();
+</script>
+
+</body>
+</html>

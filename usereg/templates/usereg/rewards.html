@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenify | Rewards</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+  body { display:flex; flex-direction:column; min-height:100vh; background: radial-gradient(circle at 20% 30%, #e9fff0 0%, #d9ffea 40%, #f2fff9 100%); color:#333; overflow-x:hidden; }
+
+  /* Header */
+  header { background: linear-gradient(270deg,#2e8b57,#3fbf7f,#27a96f); background-size:600% 600%; animation:gradientShift 10s ease infinite; color:white; padding:18px 40px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 15px rgba(46,139,87,0.3); }
+  @keyframes gradientShift { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+  header nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; }
+  header nav a:hover { text-decoration: underline; }
+
+  /* Main layout */
+  .main-content { display:flex; flex:1; }
+
+  /* Sidebar */
+  .sidebar { width:270px; background: rgba(37,111,70,0.95); color:white; padding:30px 20px; display:flex; flex-direction:column; box-shadow: inset -3px 0 10px rgba(0,0,0,0.2); overflow-y:auto; }
+  .sidebar a { color:#eaffea; text-decoration:none; padding:10px 14px; border-radius:8px; margin-bottom:8px; display:block; transition:0.3s; }
+  .sidebar a:hover { background: linear-gradient(90deg,#3fc46d,#2e8b57); transform:translateX(5px); }
+
+  /* Dashboard */
+  .dashboard { flex:1; padding:40px; background: linear-gradient(135deg,#f8fff8 0%,#e6ffe9 100%); position:relative; overflow-y:auto; }
+  .dashboard h2 { color:#2e8b57; text-align:center; margin-bottom:30px; font-size:32px; }
+
+  /* Rewards Grid */
+  .rewards-grid { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+  .reward-card { background:#ffffffcc; padding:25px; width:220px; border-radius:20px; box-shadow:0 8px 25px rgba(46,139,87,0.25); text-align:center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .reward-card:hover { transform:translateY(-5px); box-shadow:0 12px 35px rgba(46,139,87,0.35); }
+  .reward-card h3 { color:#2e8b57; margin-bottom:15px; font-size:20px; }
+  .reward-card p { font-size:14px; color:#555; margin-bottom:15px; }
+  .reward-card button { padding:10px 16px; background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; border:none; border-radius:10px; cursor:pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .reward-card button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(46,139,87,0.4); }
+
+  footer { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; text-align:center; padding:14px; font-size:14px; margin-top:auto; }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Greenify</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="sidebar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'eco_tips' %}">🪴 Eco Tips</a>
+        <a href="{% url 'waste_management' %}">🚮 Waste Management</a>
+        <a href="{% url 'water_conservation' %}">💧 Water Conservation</a>
+        <a href="{% url 'energy_conservation' %}">⚡ Energy Conservation</a>
+        <a href="{% url 'carbon_footprint' %}">🌍 Carbon Footprint Calculator</a>
+        <a href="{% url 'eco_challenges' %}">🏆 Eco Challenges</a>
+<a href="{% url 'progress_tracker' %}">📈 Progress Tracker</a>
+        <a href="{% url 'leaderboard' %}">🎖 Leaderboard</a>
+        <a href="{% url 'rewards' %}">🎁 Rewards</a>
+        <a href="{% url 'community' %}">🤝 Community</a>
+        <a href="{% url 'articles' %}">📰 Articles</a>
+        <a href="{% url 'feedback' %}">💬 Feedback</a>
+        <a href="{% url 'about' %}">ℹ️ About Us</a>
+    </div>
+
+    <div class="dashboard">
+        <h2>🎁 Rewards</h2>
+
+        <div class="rewards-grid">
+            {% for reward in rewards %}
+            <div class="reward-card">
+                <h3>{{ reward.name }}</h3>
+                <p>Points Required: {{ reward.points }}</p>
+                <button onclick="alert('Redeemed {{ reward.name }}!')">Redeem</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Greenify | Empowering Sustainable Futures 🌎</p>
+</footer>
+
+</body>
+</html>

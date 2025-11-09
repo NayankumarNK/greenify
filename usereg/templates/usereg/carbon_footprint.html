@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenify | Carbon Footprint Calculator</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+  body { display:flex; flex-direction:column; min-height:100vh; background: radial-gradient(circle at 20% 30%, #e9fff0 0%, #d9ffea 40%, #f2fff9 100%); color:#333; overflow-x:hidden; }
+
+  /* Header */
+  header { background: linear-gradient(270deg,#2e8b57,#3fbf7f,#27a96f); background-size:600% 600%; animation:gradientShift 10s ease infinite; color:white; padding:18px 40px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 15px rgba(46,139,87,0.3); }
+  @keyframes gradientShift { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+  header nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; }
+  header nav a:hover { text-decoration: underline; }
+
+  /* Main layout */
+  .main-content { display:flex; flex:1; }
+
+  /* Sidebar */
+  .sidebar { width:270px; background: rgba(37,111,70,0.95); color:white; padding:30px 20px; display:flex; flex-direction:column; box-shadow: inset -3px 0 10px rgba(0,0,0,0.2); overflow-y:auto; }
+  .sidebar a { color:#eaffea; text-decoration:none; padding:10px 14px; border-radius:8px; margin-bottom:8px; display:block; transition:0.3s; }
+  .sidebar a:hover { background: linear-gradient(90deg,#3fc46d,#2e8b57); transform:translateX(5px); }
+
+  /* Dashboard */
+  .dashboard { flex:1; padding:40px; background: linear-gradient(135deg,#f8fff8 0%,#e6ffe9 100%); position:relative; overflow-y:auto; }
+  .dashboard h2 { color:#2e8b57; text-align:center; margin-bottom:30px; font-size:32px; }
+
+  /* Calculator Card */
+  .calculator-card {
+    background:#ffffffcc;
+    padding:30px;
+    max-width:520px;
+    margin:0 auto;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(46,139,87,0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .calculator-card:hover { transform:translateY(-5px); box-shadow:0 12px 35px rgba(46,139,87,0.35); }
+  .calculator-card h3 { color:#2e8b57; margin-bottom:20px; text-align:center; font-size:24px; }
+
+  .calculator-card label { display:block; margin:12px 0 6px; font-weight:500; color:#333; }
+  .calculator-card input, .calculator-card select {
+    width:100%; padding:12px; margin-bottom:15px; border:2px solid #d1f0da; border-radius:10px; outline:none; transition:0.3s;
+  }
+  .calculator-card input:focus, .calculator-card select:focus { border-color:#3fbf7f; box-shadow:0 0 10px rgba(63,191,127,0.3); }
+  
+  .calculator-card button {
+    width:100%; background:linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; border:none; padding:12px; border-radius:10px; cursor:pointer; font-size:16px; box-shadow:0 0 12px rgba(63,191,127,0.4); transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .calculator-card button:hover { transform:translateY(-2px); box-shadow:0 6px 15px rgba(46,139,87,0.4); }
+
+  /* Result Box */
+  .result-box {
+    margin-top:25px;
+    padding:20px;
+    background:#f3fff6;
+    border-left:6px solid #3fbf7f;
+    border-radius:10px;
+    font-weight:600;
+    color:#2e8b57;
+    font-size:18px;
+    text-align:center;
+    display:none;
+  }
+
+  footer { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; text-align:center; padding:14px; font-size:14px; }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Greenify</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="sidebar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'eco_tips' %}">🪴 Eco Tips</a>
+        <a href="{% url 'waste_management' %}">🚮 Waste Management</a>
+        <a href="{% url 'water_conservation' %}">💧 Water Conservation</a>
+        <a href="{% url 'energy_conservation' %}">⚡ Energy Conservation</a>
+        <a href="{% url 'carbon_footprint' %}">🌍 Carbon Footprint Calculator</a>
+        <a href="{% url 'eco_challenges' %}">🏆 Eco Challenges / Gamification</a>
+<a href="{% url 'progress_tracker' %}">📈 Progress Tracker</a>
+        <a href="{% url 'leaderboard' %}">🎖 Leaderboard</a>
+        <a href="{% url 'rewards' %}">🎁 Rewards</a>
+        <a href="{% url 'community' %}">🤝 Community</a>
+        <a href="{% url 'articles' %}">📰 Articles</a>
+        <a href="{% url 'feedback' %}">💬 Feedback</a>
+        <a href="{% url 'about' %}">ℹ️ About Us</a>
+    </div>
+
+    <div class="dashboard">
+        <h2>🌍 Carbon Footprint Calculator</h2>
+
+       <div class="calculator-card">
+    <h3>Calculate Your Carbon Footprint</h3>
+
+    <label for="electricity">Monthly Electricity Usage (kWh)</label>
+    <input type="number" id="electricity" placeholder="e.g., 350">
+
+    <label for="fuel">Monthly Fuel Usage (liters)</label>
+    <input type="number" id="fuel" placeholder="e.g., 50">
+
+    <label for="diet">Diet Type</label>
+    <select id="diet">
+        <option value="omnivore">Omnivore</option>
+        <option value="vegetarian">Vegetarian</option>
+        <option value="vegan">Vegan</option>
+    </select>
+
+    <label for="flights">Flights per Year</label>
+    <input type="number" id="flights" placeholder="e.g., 2">
+
+    <div style="display:flex; gap:10px;">
+        <button onclick="calculateFootprint()">Calculate</button>
+        <button style="background: #f28b82; box-shadow: 0 0 12px rgba(242,139,130,0.4);" onclick="resetCalculator()">Reset</button>
+    </div>
+
+    <div class="result-box" id="result">Your carbon footprint will appear here...</div>
+</div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Greenify | Empowering Sustainable Futures 🌎</p>
+</footer>
+
+<script>
+function calculateFootprint() {
+    const electricity = parseFloat(document.getElementById('electricity').value) || 0;
+    const fuel = parseFloat(document.getElementById('fuel').value) || 0;
+    const diet = document.getElementById('diet').value;
+    const flights = parseFloat(document.getElementById('flights').value) || 0;
+
+    let footprint = (electricity * 0.233) + (fuel * 2.31) + (flights * 250);
+    if(diet === 'vegetarian') footprint *= 0.9;
+    else if(diet === 'vegan') footprint *= 0.8;
+
+    const resultBox = document.getElementById('result');
+    resultBox.innerText = "🌱 Your Annual Carbon Footprint: " + footprint.toFixed(2) + " kg CO₂";
+    resultBox.style.display = 'block';
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetCalculator() {
+    document.getElementById('electricity').value = '';
+    document.getElementById('fuel').value = '';
+    document.getElementById('diet').value = 'omnivore';
+    document.getElementById('flights').value = '';
+    const resultBox = document.getElementById('result');
+    resultBox.style.display = 'none';
+}
+</script>
+
+
+</body>
+</html>

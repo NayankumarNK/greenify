@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenify | Water Conservation</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+
+  body {
+    display:flex; flex-direction:column; min-height:100vh;
+    background: #e8f8f5; color:#333; overflow-x:hidden;
+  }
+
+  /* Header */
+  header {
+    background: linear-gradient(270deg,#2e8b57,#3fbf7f,#27a96f);
+    background-size:600% 600%; animation:gradientShift 10s ease infinite;
+    color:white; padding:18px 40px;
+    display:flex; justify-content:space-between; align-items:center;
+    box-shadow:0 4px 15px rgba(46,139,87,0.3);
+  }
+  @keyframes gradientShift { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+  header nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; transition:0.3s; }
+  header nav a:hover { text-decoration: underline; color:#dfffe2; }
+
+  /* Layout */
+  .main-content { display:flex; flex:1; min-height: calc(100vh - 72px - 40px); }
+
+  /* Sidebar */
+  .sidebar {
+    width:260px; background: rgba(37,111,70,0.95); color:white; padding:30px 20px;
+    display:flex; flex-direction:column; box-shadow: inset -3px 0 10px rgba(0,0,0,0.2); overflow-y:auto;
+  }
+  .sidebar a {
+    color:#eaffea; text-decoration:none; padding:12px 15px; border-radius:10px; margin-bottom:10px; display:block;
+    font-weight:500; transition:0.3s; font-size:14px;
+  }
+  .sidebar a:hover { background: linear-gradient(90deg,#3fc46d,#2e8b57); transform:translateX(5px); }
+
+  /* Dashboard */
+  .dashboard {
+    flex:1; padding:40px; background: #f0fefb; overflow-y:auto;
+  }
+  .dashboard h2 {
+    color:#2e8b57; text-align:center; margin-bottom:40px; font-size:36px; letter-spacing:1px;
+  }
+
+  /* Water Tip Cards */
+  .tips-cards {
+    display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:25px;
+  }
+  .tip-card {
+    background: linear-gradient(135deg,#d1f0da,#e0fff1); border-radius:18px;
+    padding:25px; box-shadow:0 8px 20px rgba(46,139,87,0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .tip-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(46,139,87,0.35);
+  }
+  .tip-card h3 {
+    color:#2e8b57; margin-bottom:12px; font-size:22px; display:flex; align-items:center;
+  }
+  .tip-card h3::before {
+    content:"💧"; margin-right:10px; font-size:24px;
+  }
+  .tip-card p { color:#4d4d4d; font-size:15px; margin-bottom:20px; line-height:1.5; }
+  .tip-card button {
+    align-self:flex-start; padding:10px 18px; font-size:14px; font-weight:600;
+    border:none; border-radius:8px; cursor:pointer;
+    background: linear-gradient(90deg,#2e8b57,#3fbf7f);
+    color:white; transition:0.3s;
+  }
+  .tip-card button:hover { transform:translateY(-2px); box-shadow:0 6px 15px rgba(46,139,87,0.4); }
+
+  /* Modal */
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; }
+  .modal-content {
+    background:white; padding:30px; border-radius:16px; max-width:500px; width:90%;
+    position:relative; box-shadow:0 6px 25px rgba(46,139,87,0.3);
+  }
+  .modal-content h3 { color:#2e8b57; margin-bottom:15px; }
+  .modal-content ul { list-style: disc; padding-left:20px; margin-bottom:20px; color:#555; }
+  .close-btn { position:absolute; top:10px; right:15px; background:#2e8b57; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+
+  footer { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; text-align:center; padding:14px; font-size:14px; }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Greenify</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="sidebar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'eco_tips' %}">🪴 Eco Tips</a>
+        <a href="{% url 'waste_management' %}">🚮 Waste Management</a>
+        <a href="{% url 'water_conservation' %}">💧 Water Conservation</a>
+        <a href="{% url 'energy_conservation' %}">⚡ Energy Conservation</a>
+        <a href="{% url 'carbon_footprint' %}">🌍 Carbon Footprint Calculator</a>
+        <a href="{% url 'eco_challenges' %}">🏆 Eco Challenges / Gamification</a>
+<a href="{% url 'progress_tracker' %}">📈 Progress Tracker</a>
+        <a href="{% url 'leaderboard' %}">🎖 Leaderboard</a>
+        <a href="{% url 'rewards' %}">🎁 Rewards</a>
+        <a href="{% url 'community' %}">🤝 Community</a>
+        <a href="{% url 'articles' %}">📰 Articles</a>
+        <a href="{% url 'feedback' %}">💬 Feedback</a>
+        <a href="{% url 'about' %}">ℹ️ About Us</a>
+    </div>
+
+    <div class="dashboard">
+        <h2>💧 Water Conservation Tips</h2>
+
+        <div class="tips-cards">
+            <div class="tip-card">
+                <h3>Reduce Water Usage</h3>
+                <p>Turn off taps when not in use, fix leaking pipes, and install water-saving fixtures.</p>
+                <button onclick="showTips('Reduce Water Usage', ['Turn off taps while brushing.', 'Fix leaking taps and pipes.', 'Install low-flow showerheads.'])">View Tips</button>
+            </div>
+            <div class="tip-card">
+                <h3>Rainwater Harvesting</h3>
+                <p>Collect and store rainwater for household or garden use to reduce dependency on mains water.</p>
+                <button onclick="showTips('Rainwater Harvesting', ['Use barrels or tanks to collect rainwater.', 'Filter rainwater before use.', 'Use stored water for gardening.'])">View Tips</button>
+            </div>
+            <div class="tip-card">
+                <h3>Smart Gardening</h3>
+                <p>Use drip irrigation and water plants early morning or late evening to minimize evaporation.</p>
+                <button onclick="showTips('Smart Gardening', ['Use drip irrigation.', 'Water plants in mornings/evenings.', 'Choose drought-resistant plants.'])">View Tips</button>
+            </div>
+            <div class="tip-card">
+                <h3>Reuse & Recycle</h3>
+                <p>Reuse greywater for cleaning, gardening, or flushing toilets to conserve fresh water.</p>
+                <button onclick="showTips('Reuse & Recycle', ['Collect greywater from sinks or baths.', 'Use it for flushing or gardening.', 'Avoid harmful chemicals in greywater.'])">View Tips</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="tipModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">✖</button>
+        <h3 id="modalTitle"></h3>
+        <ul id="modalTips"></ul>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Greenify | Empowering Sustainable Futures 🌎</p>
+</footer>
+
+<script>
+function showTips(title, tips){
+    document.getElementById('modalTitle').innerText = title + " Tips";
+    const ul = document.getElementById('modalTips');
+    ul.innerHTML = '';
+    tips.forEach(tip => {
+        const li = document.createElement('li');
+        li.innerText = tip;
+        ul.appendChild(li);
+    });
+    document.getElementById('tipModal').style.display = 'flex';
+}
+function closeModal(){
+    document.getElementById('tipModal').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

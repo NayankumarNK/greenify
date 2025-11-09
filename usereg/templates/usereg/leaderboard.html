@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenify | Leaderboard</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+  body { display:flex; flex-direction:column; min-height:100vh; background: radial-gradient(circle at 20% 30%, #e9fff0 0%, #d9ffea 40%, #f2fff9 100%); color:#333; overflow-x:hidden; }
+
+  /* Header */
+  header { background: linear-gradient(270deg,#2e8b57,#3fbf7f,#27a96f); background-size:600% 600%; animation:gradientShift 10s ease infinite; color:white; padding:18px 40px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 15px rgba(46,139,87,0.3); }
+  @keyframes gradientShift { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+  header nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; }
+  header nav a:hover { text-decoration: underline; }
+
+  /* Main layout */
+  .main-content { display:flex; flex:1; }
+
+  /* Sidebar */
+  .sidebar { width:270px; background: rgba(37,111,70,0.95); color:white; padding:30px 20px; display:flex; flex-direction:column; box-shadow: inset -3px 0 10px rgba(0,0,0,0.2); overflow-y:auto; }
+  .sidebar a { color:#eaffea; text-decoration:none; padding:10px 14px; border-radius:8px; margin-bottom:8px; display:block; transition:0.3s; }
+  .sidebar a:hover { background: linear-gradient(90deg,#3fc46d,#2e8b57); transform:translateX(5px); }
+
+  /* Dashboard */
+  .dashboard { flex:1; padding:40px; background: linear-gradient(135deg,#f8fff8 0%,#e6ffe9 100%); position:relative; overflow-y:auto; }
+  .dashboard h2 { color:#2e8b57; text-align:center; margin-bottom:30px; font-size:32px; }
+
+  table { width:100%; border-collapse: collapse; margin-top:20px; background:#ffffffcc; border-radius:12px; overflow:hidden; }
+  th, td { padding:12px 15px; text-align:left; border-bottom:1px solid #d1f0da; }
+  th { background:#2e8b57; color:white; }
+  tr:hover { background:#d1f0da; }
+
+  .badge { font-size:16px; margin-left:8px; }
+  .gold { color: #FFD700; }
+  .silver { color: #C0C0C0; }
+  .bronze { color: #CD7F32; }
+
+  .progress-bar { background:#d1f0da; border-radius:10px; overflow:hidden; height:18px; margin-top:5px; }
+  .progress { height:100%; text-align:right; color:white; padding-right:5px; line-height:18px; font-size:12px; border-radius:10px; width:0; transition: width 1s ease; }
+
+  footer { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; text-align:center; padding:14px; font-size:14px; margin-top:auto; }
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Greenify</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="sidebar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'eco_tips' %}">🪴 Eco Tips</a>
+        <a href="{% url 'waste_management' %}">🚮 Waste Management</a>
+        <a href="{% url 'water_conservation' %}">💧 Water Conservation</a>
+        <a href="{% url 'energy_conservation' %}">⚡ Energy Conservation</a>
+        <a href="{% url 'carbon_footprint' %}">🌍 Carbon Footprint Calculator</a>
+        <a href="{% url 'eco_challenges' %}">🏆 Eco Challenges</a>
+<a href="{% url 'progress_tracker' %}">📈 Progress Tracker</a>
+        <a href="{% url 'leaderboard' %}">🎖 Leaderboard</a>
+        <a href="{% url 'rewards' %}">🎁 Rewards</a>
+        <a href="{% url 'community' %}">🤝 Community</a>
+        <a href="{% url 'articles' %}">📰 Articles</a>
+        <a href="{% url 'feedback' %}">💬 Feedback</a>
+        <a href="{% url 'about' %}">ℹ️ About Us</a>
+    </div>
+
+    <div class="dashboard">
+        <h2>🎖 Gamified Leaderboard</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Points</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        {{ forloop.counter }}
+                        {% if forloop.counter == 1 %}<span class="badge gold">🥇</span>{% endif %}
+                        {% if forloop.counter == 2 %}<span class="badge silver">🥈</span>{% endif %}
+                        {% if forloop.counter == 3 %}<span class="badge bronze">🥉</span>{% endif %}
+                    </td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.points }}</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress" style="background: {% if forloop.counter == 1 %}#FFD700{% elif forloop.counter == 2 %}#C0C0C0{% elif forloop.counter == 3 %}#CD7F32{% else %}#2e8b57{% endif %};" data-width="{{ user.points }}%">
+                                {{ user.points }}%
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Greenify | Empowering Sustainable Futures 🌎</p>
+</footer>
+
+<script>
+  // Animate progress bars
+  document.addEventListener('DOMContentLoaded', () => {
+    const bars = document.querySelectorAll('.progress');
+    bars.forEach(bar => {
+      const width = bar.getAttribute('data-width');
+      setTimeout(() => {
+        bar.style.width = width;
+      }, 200);
+    });
+  });
+</script>
+
+</body>
+</html>

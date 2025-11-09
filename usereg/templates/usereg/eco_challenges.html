@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greenify | Eco Challenges</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif; }
+body { display:flex; flex-direction:column; min-height:100vh; background: radial-gradient(circle at 20% 30%, #e9fff0 0%, #d9ffea 40%, #f2fff9 100%); color:#333; overflow-x:hidden; }
+
+/* Header */
+header { background: linear-gradient(270deg,#2e8b57,#3fbf7f,#27a96f); background-size:600% 600%; animation:gradientShift 10s ease infinite; color:white; padding:18px 40px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 15px rgba(46,139,87,0.3); }
+@keyframes gradientShift { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+header nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; }
+header nav a:hover { text-decoration: underline; }
+
+/* Main layout */
+.main-content { display:flex; flex:1; }
+
+/* Sidebar */
+.sidebar { width:270px; background: rgba(37,111,70,0.95); color:white; padding:30px 20px; display:flex; flex-direction:column; box-shadow: inset -3px 0 10px rgba(0,0,0,0.2); overflow-y:auto; }
+.sidebar a { color:#eaffea; text-decoration:none; padding:10px 14px; border-radius:8px; margin-bottom:8px; display:block; transition:0.3s; }
+.sidebar a:hover { background: linear-gradient(90deg,#3fc46d,#2e8b57); transform:translateX(5px); }
+
+/* Dashboard */
+.dashboard { flex:1; padding:40px; background: linear-gradient(135deg,#f8fff8 0%,#e6ffe9 100%); position:relative; overflow-y:auto; }
+.dashboard h2 { color:#2e8b57; text-align:center; margin-bottom:30px; font-size:32px; }
+
+/* Progress Bar */
+.progress-container { background:#d1f0da; border-radius:20px; overflow:hidden; margin-bottom:30px; box-shadow: 0 0 10px rgba(46,139,87,0.2) inset; }
+.progress-bar { height:25px; width:0%; background: linear-gradient(90deg,#2e8b57,#3fbf7f); text-align:center; color:white; line-height:25px; font-weight:600; border-radius:20px; transition: width 0.4s ease, box-shadow 0.4s ease; }
+
+/* Task Cards */
+.task-section { margin-bottom:40px; }
+.task-section h3 { color:#2e8b57; margin-bottom:15px; border-bottom:2px solid #3fbf7f; padding-bottom:5px; }
+.task-cards { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+.task-card { background:#ffffffcc; border-radius:16px; box-shadow:0 6px 18px rgba(46,139,87,0.25); padding:20px; width:220px; text-align:center; transition: transform 0.3s ease, box-shadow 0.3s ease; position:relative; }
+.task-card:hover { transform: translateY(-5px); box-shadow:0 12px 35px rgba(46,139,87,0.35); }
+.task-card h4 { color:#2e8b57; margin-bottom:10px; }
+.task-card p { font-size:14px; color:#555; margin-bottom:15px; }
+.task-card button { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; transition:0.3s; }
+.task-card button:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(46,139,87,0.4); }
+
+/* Badge Modal */
+#badgeModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000; }
+#badgeModal .modal-content { background:white; padding:30px; border-radius:20px; text-align:center; max-width:400px; box-shadow:0 8px 25px rgba(46,139,87,0.3); animation: popIn 0.5s ease; }
+#badgeModal .modal-content h3 { color:#2e8b57; margin-bottom:15px; }
+#badgeModal .modal-content button { background:#2e8b57; color:white; border:none; padding:10px 16px; border-radius:10px; cursor:pointer; }
+
+@keyframes popIn { 0% {transform: scale(0);} 70% {transform: scale(1.2);} 100% {transform: scale(1);} }
+
+/* Stars animation */
+.star { position:absolute; font-size:20px; color: gold; animation: fly 1s forwards; }
+@keyframes fly {
+    0% { transform: translate(0,0) scale(0); opacity:1; }
+    50% { transform: translate(30px,-50px) scale(1.2); opacity:1; }
+    100% { transform: translate(60px,-100px) scale(0); opacity:0; }
+}
+
+/* Daily Streak Tracker */
+.streak-container { margin-bottom:30px; text-align:center; }
+.streak-container h3 { color:#2e8b57; margin-bottom:10px; }
+.streak-days { display:flex; justify-content:center; gap:10px; }
+.streak-day { width:40px; height:40px; border-radius:50%; background:#d1f0da; line-height:40px; text-align:center; font-weight:600; color:#2e8b57; transition: 0.3s; cursor:pointer; }
+.streak-day.completed { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; box-shadow: 0 0 10px #3fbf7f; transform: scale(1.1); }
+
+footer { background: linear-gradient(90deg,#2e8b57,#3fbf7f); color:white; text-align:center; padding:14px; font-size:14px; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🌿 Greenify</h1>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'profile' %}">Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="sidebar">
+        <a href="{% url 'home' %}">🏠 Home</a>
+        <a href="{% url 'eco_tips' %}">🪴 Eco Tips</a>
+        <a href="{% url 'waste_management' %}">🚮 Waste Management</a>
+        <a href="{% url 'water_conservation' %}">💧 Water Conservation</a>
+        <a href="{% url 'energy_conservation' %}">⚡ Energy Conservation</a>
+        <a href="{% url 'carbon_footprint' %}">🌍 Carbon Footprint Calculator</a>
+        <a href="{% url 'eco_challenges' %}">🏆 Eco Challenges / Gamification</a>
+<a href="{% url 'progress_tracker' %}">📈 Progress Tracker</a>
+        <a href="{% url 'leaderboard' %}">🎖 Leaderboard</a>
+        <a href="{% url 'rewards' %}">🎁 Rewards</a>
+        <a href="{% url 'community' %}">🤝 Community</a>
+        <a href="{% url 'articles' %}">📰 Articles</a>
+        <a href="{% url 'feedback' %}">💬 Feedback</a>
+        <a href="{% url 'about' %}">ℹ️ About Us</a>
+    </div>
+
+    <div class="dashboard">
+        <h2>🏆 Eco Challenges & Gamification</h2>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <!-- Daily Streak -->
+        <div class="streak-container">
+            <h3>🔥 Daily Streak Tracker</h3>
+            <div class="streak-days">
+                <div class="streak-day" onclick="completeDay(this)">Mon</div>
+                <div class="streak-day" onclick="completeDay(this)">Tue</div>
+                <div class="streak-day" onclick="completeDay(this)">Wed</div>
+                <div class="streak-day" onclick="completeDay(this)">Thu</div>
+                <div class="streak-day" onclick="completeDay(this)">Fri</div>
+                <div class="streak-day" onclick="completeDay(this)">Sat</div>
+                <div class="streak-day" onclick="completeDay(this)">Sun</div>
+            </div>
+        </div>
+
+        <!-- Daily Tasks -->
+        <div class="task-section">
+            <h3>Daily Tasks (Small Credits)</h3>
+            <div class="task-cards">
+                <div class="task-card">
+                    <h4>Use Reusable Bag</h4>
+                    <p>Credits: 5</p>
+                    <button onclick="completeTask(this,5,false)">✔ Complete</button>
+                </div>
+                <div class="task-card">
+                    <h4>Turn Off Lights</h4>
+                    <p>Credits: 5</p>
+                    <button onclick="completeTask(this,5,false)">✔ Complete</button>
+                </div>
+                <div class="task-card">
+                    <h4>Drink Tap Water</h4>
+                    <p>Credits: 5</p>
+                    <button onclick="completeTask(this,5,false)">✔ Complete</button>
+                </div>
+                <div class="task-card">
+                    <h4>Walk or Cycle</h4>
+                    <p>Credits: 5</p>
+                    <button onclick="completeTask(this,5,false)">✔ Complete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Tasks -->
+        <div class="task-section">
+            <h3>Weekly Tasks (Big Credits)</h3>
+            <div class="task-cards">
+                <div class="task-card">
+                    <h4>Plant a Tree</h4>
+                    <p>Credits: 50</p>
+                    <button onclick="completeTask(this,50,true)">✔ Complete</button>
+                </div>
+                <div class="task-card">
+                    <h4>Organize Clean-up</h4>
+                    <p>Credits: 50</p>
+                    <button onclick="completeTask(this,50,true)">✔ Complete</button>
+                </div>
+                <div class="task-card">
+                    <h4>Recycle 10 Items</h4>
+                    <p>Credits: 40</p>
+                    <button onclick="completeTask(this,40,true)">✔ Complete</button>
+                </div>
+                <div class="task-card">
+                    <h4>Share Eco Tips</h4>
+                    <p>Credits: 30</p>
+                    <button onclick="completeTask(this,30,true)">✔ Complete</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Badge Modal -->
+<div id="badgeModal">
+    <div class="modal-content">
+        <h3>🏅 Congratulations! You earned a badge!</h3>
+        <button onclick="closeBadge()">Close</button>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Greenify | Empowering Sustainable Futures 🌎</p>
+</footer>
+
+<script>
+let totalCredits = 0;
+const maxCredits = 300;
+
+// Task completion
+function completeTask(button, credits, showBadge){
+    if(button.disabled) return;
+    button.disabled = true;
+    button.innerText = "✅ Done";
+    totalCredits += credits;
+
+    // Update progress
+    let progress = Math.min((totalCredits/maxCredits)*100, 100);
+    const bar = document.getElementById('progressBar');
+    bar.style.width = progress + '%';
+    bar.innerText = Math.round(progress) + '%';
+    bar.style.boxShadow = '0 0 15px #3fbf7f';
+    setTimeout(()=>{ bar.style.boxShadow = '0 0 8px #3fbf7f'; }, 400);
+
+    if(showBadge){
+        document.getElementById('badgeModal').style.display = 'flex';
+        for(let i=0;i<5;i++){
+            let star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = (50 + i*20)+'px';
+            document.body.appendChild(star);
+            setTimeout(()=>star.remove(),1000);
+        }
+    }
+}
+
+// Badge modal
+function closeBadge(){
+    document.getElementById('badgeModal').style.display = 'none';
+}
+
+// Daily streak
+function completeDay(dayElem){
+    if(!dayElem.classList.contains('completed')){
+        dayElem.classList.add('completed');
+        totalCredits += 5; // reward for streak
+        let progress = Math.min((totalCredits/300)*100,100);
+        const bar = document.getElementById('progressBar');
+        bar.style.width = progress + '%';
+        bar.innerText = Math.round(progress) + '%';
+    }
+}
+</script>
+
+</body>
+</html>
